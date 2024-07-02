@@ -1,11 +1,13 @@
 {
-  "extends": "@chrome-extension-boilerplate/tsconfig/base",
+  "extends": "@ai-community-notes/tsconfig/base",
   "compilerOptions": {
+    "module": "ES2022",
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["lib/*"]
+      "@src/*": ["src/*"]
     },
-    "types": ["chrome"]
+    "jsx": "react-jsx",
+    "types": ["chrome", "vite/client"]
   },
-  "include": ["lib"]
+  "include": ["src"]
 }

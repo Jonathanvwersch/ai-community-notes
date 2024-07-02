@@ -1,7 +1,7 @@
 {
-  "name": "@chrome-extension-boilerplate/dev-utils",
+  "name": "@ai-community-notes/dev-utils",
   "version": "0.0.1",
-  "description": "chrome extension dev utils",
+  "description": "Dev utils",
   "private": true,
   "sideEffects": false,
   "files": [
@@ -20,6 +20,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@chrome-extension-boilerplate/tsconfig": "workspace:*"
+    "@ai-community-notes/tsconfig": "workspace:*"
   }
 }

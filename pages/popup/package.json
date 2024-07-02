@@ -1,5 +1,5 @@
 {
-  "name": "@chrome-extension-boilerplate/popup",
+  "name": "@ai-community-notes/popup",
   "version": "0.0.1",
   "description": "chrome extension popup",
   "private": true,
@@ -9,8 +9,9 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "pnpm run clean && tsc --noEmit && vite build",
+    "build:tailwindcss": "tailwindcss -i ./tailwind-input.css -o ./tailwind-output.css",
     "build:watch": "cross-env __DEV__=true vite build -w --mode development",
+    "build": "pnpm build:tailwindcss && pnpm run clean && tsc --noEmit && vite build",
     "dev": "pnpm build:watch",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "pnpm lint --fix",
@@ -18,12 +19,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@chrome-extension-boilerplate/shared": "workspace:*",
-    "@chrome-extension-boilerplate/storage": "workspace:*"
+    "@ai-community-notes/shared": "workspace:*",
+    "@ai-community-notes/storage": "workspace:*"
   },
   "devDependencies": {
-    "@chrome-extension-boilerplate/tailwindcss-config": "workspace:*",
-    "@chrome-extension-boilerplate/tsconfig": "workspace:*",
-    "@chrome-extension-boilerplate/hmr": "workspace:*"
+    "@ai-community-notes/tailwindcss-config": "workspace:*",
+    "@ai-community-notes/tsconfig": "workspace:*",
+    "@ai-community-notes/hmr": "workspace:*"
   }
 }

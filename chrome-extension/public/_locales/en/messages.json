@@ -1,10 +1,10 @@
 {
   "extensionDescription": {
-    "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "description": "AI Community Notes",
+    "message": "Fact check every tweet you see on X/Twitter using AI"
   },
   "extensionName": {
-    "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "description": "AI Community Notes",
+    "message": "Fact check every tweet you see on X/Twitter using AI"
   }
 }

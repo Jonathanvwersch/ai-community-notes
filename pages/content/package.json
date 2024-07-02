@@ -1,5 +1,5 @@
 {
-  "name": "@chrome-extension-boilerplate/content-script",
+  "name": "@ai-community-notes/content-script",
   "version": "0.0.1",
   "description": "chrome extension content script",
   "private": true,
@@ -9,20 +9,22 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "pnpm run clean && tsc --noEmit && vite build",
+    "build:tailwindcss": "tailwindcss -i ./tailwind-input.css -o ./tailwind-output.css",
+    "build": "pnpm build:tailwindcss && pnpm run clean && tsc --noEmit && vite build",
     "build:watch": "cross-env __DEV__=true vite build -w --mode development",
-    "dev": "pnpm build:watch",
+    "dev": "concurrently \"pnpm build:tailwindcss --watch\" \"pnpm build:watch\"",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "pnpm lint --fix",
     "prettier": "prettier . --write --ignore-path ../../.prettierignore",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@chrome-extension-boilerplate/shared": "workspace:*",
-    "@chrome-extension-boilerplate/storage": "workspace:*"
+    "@ai-community-notes/shared": "workspace:*",
+    "@ai-community-notes/storage": "workspace:*"
   },
   "devDependencies": {
-    "@chrome-extension-boilerplate/tsconfig": "workspace:*",
-    "@chrome-extension-boilerplate/hmr": "workspace:*"
+    "@ai-community-notes/hmr": "workspace:*",
+    "@ai-community-notes/tsconfig": "workspace:*",
+    "concurrently": "^8.2.2"
   }
 }

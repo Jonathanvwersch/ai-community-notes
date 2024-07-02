@@ -1,5 +1,5 @@
 {
-  "extends": "@chrome-extension-boilerplate/tsconfig/utils",
+  "extends": "@ai-community-notes/tsconfig/utils",
   "compilerOptions": {
     "outDir": "dist",
     "jsx": "react-jsx",

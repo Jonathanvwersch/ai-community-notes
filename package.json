@@ -1,11 +1,10 @@
 {
-  "name": "chrome-extension-boilerplate-react-vite",
+  "name": "ai-community-notes",
   "version": "0.0.1",
-  "description": "chrome extension boilerplate",
+  "description": "Fact check every tweet you see on X/Twitter using AI",
   "license": "MIT",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite.git"
+    "type": "git"
   },
   "scripts": {
     "clean": "rimraf dist && turbo clean",
@@ -18,8 +17,7 @@
     "type-check": "turbo type-check",
     "lint": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:fix": "turbo lint:fix --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
-    "prettier": "turbo prettier --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
-    "prepare": "husky install"
+    "prettier": "turbo prettier --continue -- --cache --cache-location node_modules/.cache/.prettiercache"
   },
   "type": "module",
   "dependencies": {
@@ -44,7 +42,6 @@
     "eslint-plugin-prettier": "5.1.3",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.2",
-    "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "postcss": "^8.4.38",
     "prettier": "^3.3.2",

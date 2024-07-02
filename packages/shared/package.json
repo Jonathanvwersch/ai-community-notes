@@ -1,5 +1,5 @@
 {
-  "name": "@chrome-extension-boilerplate/shared",
+  "name": "@ai-community-notes/shared",
   "version": "0.0.1",
   "description": "chrome extension shared code",
   "private": true,
@@ -22,7 +22,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@chrome-extension-boilerplate/storage": "workspace:*",
-    "@chrome-extension-boilerplate/tsconfig": "workspace:*"
+    "@ai-community-notes/storage": "workspace:*",
+    "@ai-community-notes/tsconfig": "workspace:*"
   }
 }

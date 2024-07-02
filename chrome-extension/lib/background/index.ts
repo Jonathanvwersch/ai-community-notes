@@ -1,9 +1,3 @@
-import 'webextension-polyfill';
-import { exampleThemeStorage } from '@chrome-extension-boilerplate/storage';
-
-exampleThemeStorage.get().then(theme => {
-  console.log('theme', theme);
+chrome.runtime.onMessage.addListener((_, __, ___) => {
+  return false;
 });
-
-console.log('background loaded');
-console.log("Edit 'chrome-extension/lib/background/index.ts' and save to reload.");

@@ -1,7 +1,7 @@
 {
-  "name": "@chrome-extension-boilerplate/tailwindcss-config",
+  "name": "@ai-community-notes/tailwindcss-config",
   "version": "1.0.0",
-  "description": "Tailwind CSS configuration for boilerplate",
+  "description": "Tailwind CSS configuratio",
   "main": "./tailwind.config.js",
   "private": true
 }
