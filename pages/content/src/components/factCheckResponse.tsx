@@ -3,7 +3,7 @@ import React from 'react';
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-gray-300 rounded-lg p-4 mt-2 shadow-sm">
+    <div className="bg-white border border-gray-300 rounded-lg p-4 mt-6 shadow-sm">
       <div className="flex items-center mb-2 gap-2 border-b border-gray-300 pb-2">
         <img src={chrome.runtime.getURL('icon.svg')} alt="Fact Check" className="w-7 h-7" />
         <h3 className="font-bold text-gray-700">AI-added Context</h3>
@@ -59,7 +59,7 @@ export const FactCheckResponse: React.FC<FactCheckResponseProps> = ({ response }
           <ul className="list-decimal pl-5">
             {response.sources?.map((source, index) => (
               <li key={index}>
-                <a className="text-blue-600" target="_blank" href={source}>
+                <a className="text-blue-600 break-all" target="_blank" href={source}>
                   {source}
                 </a>
               </li>
@@ -69,7 +69,7 @@ export const FactCheckResponse: React.FC<FactCheckResponseProps> = ({ response }
       ) : null}
       <p className="text-xs italic mt-4">
         Disclaimer: This fact check was generated using Perplexity AI and is not a substitute for human analysis. Please
-        consult the sources. This widget is not in anyway affiliated with the X/Twitter platform.
+        consult the sources. This widget is not in any way affiliated with the X/Twitter platform.
       </p>
     </Wrapper>
   );

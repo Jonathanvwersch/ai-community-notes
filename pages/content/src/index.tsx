@@ -3,8 +3,6 @@ import { FactCheckButton } from './components/factCheckButton';
 import { FactCheckResponse } from './components/factCheckResponse';
 import tailwindcssOutput from '../tailwind-output.css?inline';
 import '../tailwind-input.css';
-import { FactCheckShape } from './types/api';
-import { ErrorShape } from './types/error';
 import { FactCheckingInput } from './types/factChecking';
 
 const rootMap = new Map<HTMLElement, Root>();
@@ -12,6 +10,15 @@ const rootMap = new Map<HTMLElement, Root>();
 function getTweetUrl(article: HTMLElement): string | null {
   const anchor = article.querySelector('a[href*="/status/"]');
   return anchor ? anchor.getAttribute('href') : null;
+}
+
+function getFactCheckFromStorage(tweetUrl: string): FactCheckingInput | null {
+  const response = localStorage.getItem(tweetUrl);
+  return response ? JSON.parse(response) : null;
+}
+
+function saveFactCheckToStorage(tweetUrl: string, response: FactCheckingInput): void {
+  localStorage.setItem(tweetUrl, JSON.stringify(response));
 }
 
 function addFactCheckButton() {
@@ -62,6 +69,7 @@ function addFactCheckButton() {
         }
         responseRoot.render(<FactCheckResponse response={response} />);
         responseContainer.style.display = 'block';
+        saveFactCheckToStorage(tweetUrl ?? '', response);
       };
 
       let buttonRoot = rootMap.get(rootIntoShadow);
@@ -74,8 +82,14 @@ function addFactCheckButton() {
       const tweetUrl = tweetUri ? `https://twitter.com${tweetUri}` : null;
       const tweetText = article.innerText;
 
+      const cachedResponse = tweetUrl ? getFactCheckFromStorage(tweetUrl) : null;
+      if (cachedResponse) {
+        handleAfterFactCheckResponse(cachedResponse);
+      }
+
       buttonRoot.render(
         <FactCheckButton
+          disabled={!!cachedResponse}
           tweetText={tweetText}
           tweetUrl={tweetUrl ?? ''}
           tweetHasShowMoreLink={!!article.querySelector('[data-testid="tweet-text-show-more-link"]')}
