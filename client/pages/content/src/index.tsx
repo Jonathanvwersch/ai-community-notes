@@ -24,6 +24,10 @@ function saveFactCheckToStorage(tweetUrl: string, response: FactCheckingInput): 
   localStorage.setItem(tweetUrl, JSON.stringify(response));
 }
 
+function removeFactCheckFromStorage(tweetUrl: string): void {
+  localStorage.removeItem(tweetUrl);
+}
+
 function addFactCheckButton() {
   const articles = document.querySelectorAll('article[data-testid="tweet"]') as NodeListOf<HTMLElement>;
 
@@ -70,7 +74,15 @@ function addFactCheckButton() {
           responseRoot = createRoot(responseContainer);
           rootMap.set(responseContainer, responseRoot);
         }
-        responseRoot.render(<FactCheckResponse response={response} />);
+        responseRoot.render(
+          <FactCheckResponse
+            response={response}
+            onClose={() => {
+              responseContainer.style.display = 'none';
+              if (tweetUrl) removeFactCheckFromStorage(tweetUrl);
+            }}
+          />,
+        );
         responseContainer.style.display = 'block';
         saveFactCheckToStorage(tweetUrl ?? '', response);
       };

@@ -3,7 +3,7 @@ import { ErrorShape } from '@src/types/error';
 
 export async function performFactCheck(tweet: string, tweetUrl: string): Promise<FactCheckShape | ErrorShape> {
   try {
-    const res = await fetch('http://127.0.0.1:5000/fact-check', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/fact-check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -13,6 +13,10 @@ export async function performFactCheck(tweet: string, tweetUrl: string): Promise
         tweetUrl: tweetUrl,
       }),
     });
+
+    if (res.status === 429) {
+      return { error: true, message: "You've exceeded the limit of 5 requests per day. Please try again tomorrow." };
+    }
 
     const json = await res.json();
     const content = json.choices && json.choices[0] ? json.choices[0].message.content : 'No result';
