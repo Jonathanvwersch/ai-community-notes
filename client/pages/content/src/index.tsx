@@ -96,6 +96,7 @@ function addFactCheckButton() {
       const tweetUri = getTweetUrl(article);
       const tweetUrl = tweetUri ? `https://twitter.com${tweetUri}` : null;
       const tweetText = article.innerText;
+      const tweetDate = article.querySelector('time')?.getAttribute('datetime');
 
       const cachedResponse = tweetUrl ? getFactCheckFromStorage(tweetUrl) : null;
       if (cachedResponse) {
@@ -105,7 +106,8 @@ function addFactCheckButton() {
       buttonRoot.render(
         <FactCheckButton
           disabled={!!cachedResponse}
-          tweetText={tweetText}
+          tweetDate={tweetDate ?? ''}
+          tweetText={tweetText ?? ''}
           tweetUrl={tweetUrl ?? ''}
           tweetHasShowMoreLink={!!article.querySelector('[data-testid="tweet-text-show-more-link"]')}
           onAfterFactCheckResponse={handleAfterFactCheckResponse}

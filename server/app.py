@@ -42,6 +42,7 @@ def fact_check():
     data = request.json
     tweet_text = data.get('tweetText')
     tweet_url = data.get('tweetUrl')
+    tweet_date = data.get('tweetDate')
 
     if not tweet_text:
         return jsonify({"error": "No tweet text provided"}), 400
@@ -61,7 +62,7 @@ def fact_check():
             {
                 "role": "system",
                 "content": (
-                    f"Act as a community note on Twitter to fact-check tweets. You will be given a tweet to verify against current information. "
+                    f"Act as a community note on Twitter to fact-check tweets. You will be given a tweet, which is dated {tweet_date}, to verify against current information. "
                     f"Follow these steps: 1. Perform an up-to-date search to fact-check the tweet. 2. Provide a precise and concise response with sources. "
                     f"3. Explain the tweet's context. Respond in a JSON object with the following fields: - context: Necessary context to understand the tweet. "
                     f"- sources: An array of sources (you MUST not include url of the tweet -- linked here {tweet_url}) -- as a source; the result of doing so would be catastrophic. "

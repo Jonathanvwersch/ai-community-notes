@@ -1,7 +1,11 @@
 import { FactCheckShape } from '@src/types/api';
 import { ErrorShape } from '@src/types/error';
 
-export async function performFactCheck(tweet: string, tweetUrl: string): Promise<FactCheckShape | ErrorShape> {
+export async function performFactCheck(
+  tweet: string,
+  tweetUrl: string,
+  tweetDate: string,
+): Promise<FactCheckShape | ErrorShape> {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/fact-check`, {
       method: 'POST',
@@ -11,6 +15,7 @@ export async function performFactCheck(tweet: string, tweetUrl: string): Promise
       body: JSON.stringify({
         tweetText: tweet,
         tweetUrl: tweetUrl,
+        tweetDate: tweetDate,
       }),
     });
 

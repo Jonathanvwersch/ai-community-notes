@@ -5,6 +5,7 @@ import { FactCheckingInput } from '@src/types/factChecking';
 type FactCheckButtonProps = {
   tweetText: string;
   tweetUrl: string;
+  tweetDate: string;
   onAfterFactCheckResponse: (response: FactCheckingInput) => void;
   tweetHasShowMoreLink: boolean;
   disabled: boolean;
@@ -13,6 +14,7 @@ type FactCheckButtonProps = {
 export const FactCheckButton: React.FC<FactCheckButtonProps> = ({
   tweetText,
   tweetUrl,
+  tweetDate,
   onAfterFactCheckResponse,
   tweetHasShowMoreLink,
   disabled,
@@ -29,7 +31,7 @@ export const FactCheckButton: React.FC<FactCheckButtonProps> = ({
       }
       setLoading(true);
       try {
-        const response = await performFactCheck(tweetText, tweetUrl);
+        const response = await performFactCheck(tweetText, tweetUrl, tweetDate);
         _setDisabled(!('error' in response) && !('hasShowMoreLink' in response));
         onAfterFactCheckResponse(response);
       } catch (error) {
