@@ -18,6 +18,9 @@ function getFactCheckFromStorage(tweetUrl: string): FactCheckingInput | null {
 }
 
 function saveFactCheckToStorage(tweetUrl: string, response: FactCheckingInput): void {
+  if ('hasShowMoreLink' in response || 'error' in response) {
+    return;
+  }
   localStorage.setItem(tweetUrl, JSON.stringify(response));
 }
 
