@@ -25,9 +25,19 @@ limiter = Limiter(
 )
 API_URL = "https://api.perplexity.ai/chat/completions"
 API_KEY = os.getenv("PERPLEXITY_AI_API_KEY")
+BYPASS_SECRET_KEY = os.getenv("BYPASS_RATE_LIMIT_KEY")
+
+def rate_limit_bypass_key():
+    return request.headers.get('X-Bypass-Key', '')
+
+def rate_limit_if_no_bypass():
+    if rate_limit_bypass_key() != BYPASS_SECRET_KEY:
+        return "5 per day"
+    return "1000 per day"  # High limit for bypass requests
+
 
 @app.route('/fact-check', methods=['POST'])
-@limiter.limit("5 per day")
+@limiter.limit(rate_limit_if_no_bypass)
 def fact_check():
     data = request.json
     tweet_text = data.get('tweetText')
