@@ -12,20 +12,21 @@ function getTweetUrl(article: HTMLElement): string | null {
   return anchor ? anchor.getAttribute('href') : null;
 }
 
-function getFactCheckFromStorage(tweetUrl: string): FactCheckingInput | null {
-  const response = localStorage.getItem(tweetUrl);
+function getFactCheckFromStorage(tweetUri: string): FactCheckingInput | null {
+  const response = localStorage.getItem(tweetUri);
   return response ? JSON.parse(response) : null;
 }
 
-function saveFactCheckToStorage(tweetUrl: string, response: FactCheckingInput): void {
+function saveFactCheckToStorage(tweetUri: string, response: FactCheckingInput): void {
   if ('hasShowMoreLink' in response || 'error' in response) {
     return;
   }
-  localStorage.setItem(tweetUrl, JSON.stringify(response));
+  localStorage.setItem(tweetUri, JSON.stringify(response));
 }
 
-function removeFactCheckFromStorage(tweetUrl: string): void {
-  localStorage.removeItem(tweetUrl);
+function removeFactCheckFromStorage(tweetUri: string): void {
+  localStorage.removeItem(tweetUri);
+  window.dispatchEvent(new Event('storage'));
 }
 
 function addFactCheckButton() {
@@ -79,12 +80,14 @@ function addFactCheckButton() {
             response={response}
             onClose={() => {
               responseContainer.style.display = 'none';
-              if (tweetUrl) removeFactCheckFromStorage(tweetUrl);
+              if (tweetUri) {
+                removeFactCheckFromStorage(tweetUri);
+              }
             }}
           />,
         );
         responseContainer.style.display = 'block';
-        saveFactCheckToStorage(tweetUrl ?? '', response);
+        saveFactCheckToStorage(tweetUri ?? '', response);
       };
 
       let buttonRoot = rootMap.get(rootIntoShadow);
@@ -98,14 +101,14 @@ function addFactCheckButton() {
       const tweetText = article.innerText;
       const tweetDate = article.querySelector('time')?.getAttribute('datetime');
 
-      const cachedResponse = tweetUrl ? getFactCheckFromStorage(tweetUrl) : null;
+      const cachedResponse = tweetUrl ? getFactCheckFromStorage(tweetUri!) : null;
       if (cachedResponse) {
         handleAfterFactCheckResponse(cachedResponse);
       }
 
       buttonRoot.render(
         <FactCheckButton
-          disabled={!!cachedResponse}
+          tweetUri={tweetUri ?? ''}
           tweetDate={tweetDate ?? ''}
           tweetText={tweetText ?? ''}
           tweetUrl={tweetUrl ?? ''}

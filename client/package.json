@@ -1,5 +1,5 @@
 {
-  "name": "ai-community-notes",
+  "name": "veritweets",
   "version": "0.0.1",
   "description": "Fact check every tweet you see on X/Twitter using AI",
   "license": "MIT",
@@ -17,7 +17,8 @@
     "type-check": "turbo type-check",
     "lint": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:fix": "turbo lint:fix --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
-    "prettier": "turbo prettier --continue -- --cache --cache-location node_modules/.cache/.prettiercache"
+    "prettier": "turbo prettier --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
+    "zip": "pnpm run build &&zip -r dist.zip dist"
   },
   "type": "module",
   "dependencies": {
