@@ -46,7 +46,11 @@ def fact_check():
 
     if not tweet_text:
         return jsonify({"error": "No tweet text provided"}), 400
-
+    if not tweet_url:
+        return jsonify({"error": "No tweet URL provided"}), 400
+    if not tweet_date:
+        return jsonify({"error": "No tweet date provided"}), 400
+        
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {API_KEY}',
@@ -75,10 +79,13 @@ def fact_check():
     }
 
     response = requests.post(API_URL, headers=headers, json=payload)
+    
     if response.status_code != 200:
         return jsonify({"error": "Failed to get fact check response"}), 500
 
-    return jsonify(response.json())
+    json = response.json().get('choices')[0].get('message').get('content')
+
+    return jsonify(json)
 
 if __name__ == '__main__':
     app.run()

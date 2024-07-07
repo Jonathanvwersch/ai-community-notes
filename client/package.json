@@ -9,6 +9,7 @@
   "scripts": {
     "clean": "rimraf dist && turbo clean",
     "build": "cross-env NODE_ENV=production turbo build",
+    "build:dev": "turbo build:dev",
     "build:firefox": "cross-env __FIREFOX__=true && npm run build",
     "dev-server": "pnpm -F hmr ready && pnpm -F hmr dev",
     "dev": "turbo ready && turbo watch dev --concurrency 20",

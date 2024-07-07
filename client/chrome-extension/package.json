@@ -5,8 +5,9 @@
   "scripts": {
     "clean": "rimraf ../../dist",
     "build": "tsc --noEmit && vite build",
+    "build:dev": "npm run build -- --mode development",
     "build:firefox": "tsc --noEmit && cross-env __FIREFOX__=true vite build",
-    "build:watch": "cross-env __DEV__=true vite build -w --mode development",
+    "build:watch": "npm run build:dev -- -w",
     "build:firefox:watch": "cross-env __DEV__=true __FIREFOX__=true vite build -w --mode development",
     "dev": "pnpm build:watch",
     "dev:firefox": "pnpm build:firefox:watch",

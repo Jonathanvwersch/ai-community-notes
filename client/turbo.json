@@ -14,6 +14,11 @@
       "env": ["__FIREFOX__", "NODE_ENV", "VITE_API_URL"],
       "outputs": ["../../dist/**", "dist/**", "build/**"]
     },
+    "build:dev": {
+      "dependsOn": ["^build", "ready"],
+      "env": ["__FIREFOX__", "NODE_ENV", "VITE_API_URL"],
+      "outputs": ["../../dist/**", "dist/**", "build/**"]
+    },
     "type-check": {
       "cache": false
     },
