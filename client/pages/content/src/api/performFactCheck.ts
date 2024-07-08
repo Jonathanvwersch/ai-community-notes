@@ -24,10 +24,9 @@ export async function performFactCheck(
     }
 
     const json = await res.json();
-    const content = json.choices && json.choices[0] ? json.choices[0].message.content : 'No result';
 
     try {
-      return JSON.parse(content);
+      return JSON.parse(json);
     } catch (e) {
       return { error: true, message: 'Unable to parse JSON response.' };
     }

@@ -1,6 +1,6 @@
 {
   "name": "veritweets",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fact check every tweet you see on X/Twitter using AI",
   "license": "MIT",
   "repository": {
