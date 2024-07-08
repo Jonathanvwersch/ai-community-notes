@@ -1,56 +1,75 @@
-from flask import Flask, request, jsonify
-import requests
-import os
+from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
 from dotenv import load_dotenv
-from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from redis import Redis
+import aiohttp
+import os
+import logging
+import redis.asyncio as redis
+from contextlib import asynccontextmanager
+from fastapi.responses import Response
+import json
+
 
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Configure Redis
 redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
-redis_client = Redis.from_url(redis_url)
+redis_client = redis.from_url(redis_url)
 
-# Configure rate limiter with Redis
-limiter = Limiter(
-    key_func=get_remote_address,
-    app=app,
-    default_limits=["5 per day"],
-    storage_uri=redis_url
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Initialize FastAPILimiter
+    await FastAPILimiter.init(redis_client)
+    yield
+    # Shutdown: Close Redis connection
+    await redis_client.close()
+
+app = FastAPI(lifespan=lifespan)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 API_URL = "https://api.perplexity.ai/chat/completions"
 API_KEY = os.getenv("PERPLEXITY_AI_API_KEY")
 BYPASS_SECRET_KEY = os.getenv("BYPASS_RATE_LIMIT_KEY")
 
-def rate_limit_bypass_key():
+def get_rate_limit_key(request: Request):
     return request.headers.get('X-Bypass-Key', '')
 
-def rate_limit_if_no_bypass():
-    if rate_limit_bypass_key() != BYPASS_SECRET_KEY:
-        return "5 per day"
-    return "1000 per day"  # High limit for bypass requests
+async def rate_limit_if_no_bypass(request: Request):
+    if get_rate_limit_key(request) != BYPASS_SECRET_KEY:
+        return RateLimiter(times=5, seconds=60)
+    return RateLimiter(times=1000, seconds=86400)  # High limit for bypass requests
 
-
-@app.route('/fact-check', methods=['POST'])
-@limiter.limit(rate_limit_if_no_bypass)
-def fact_check():
-    data = request.json
+@app.post("/fact-check")
+async def fact_check(request: Request, response: Response, limiter: RateLimiter = Depends(rate_limit_if_no_bypass)):
+    await limiter(request, response)
+    try:
+        data = await request.json()
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON in request body")
+    
     tweet_text = data.get('tweetText')
     tweet_url = data.get('tweetUrl')
     tweet_date = data.get('tweetDate')
 
-    if not tweet_text:
-        return jsonify({"error": "No tweet text provided"}), 400
-    if not tweet_url:
-        return jsonify({"error": "No tweet URL provided"}), 400
-    if not tweet_date:
-        return jsonify({"error": "No tweet date provided"}), 400
-        
+    if not tweet_text or not tweet_url or not tweet_date:
+        raise HTTPException(status_code=400, detail="Missing required tweet information")
+
+    logging.debug(f"Processing fact check for tweet URL: {tweet_url}")
+
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {API_KEY}',
@@ -78,14 +97,17 @@ def fact_check():
         ],
     }
 
-    response = requests.post(API_URL, headers=headers, json=payload)
-    
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to get fact check response"}), 500
+    async with aiohttp.ClientSession() as session:
+        async with session.post(API_URL, headers=headers, json=payload) as response:
+            if response.status != 200:
+                logging.error(f"Failed to get fact check response: {response.status}")
+                raise HTTPException(status_code=500, detail="Failed to get fact check response")
 
-    json = response.json().get('choices')[0].get('message').get('content')
+            json_content = await response.json()
+            json_message = json_content['choices'][0]['message']['content']
 
-    return jsonify(json)
+    return JSONResponse(content=json_message)
 
-if __name__ == '__main__':
-    app.run()
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

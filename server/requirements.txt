@@ -1,7 +1,6 @@
-Flask
-Flask-Cors
-Flask-Limiter
+fastapi
+uvicorn
+aiohttp
 python-dotenv
-requests
-gunicorn
-redis
+redis[hiredis]
+fastapi-limiter
