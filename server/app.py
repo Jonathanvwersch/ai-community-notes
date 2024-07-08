@@ -49,9 +49,25 @@ def get_rate_limit_key(request: Request):
     return request.headers.get('X-Bypass-Key', '')
 
 async def rate_limit_if_no_bypass(request: Request):
+    client_ip = request.client.host
+    
     if get_rate_limit_key(request) != BYPASS_SECRET_KEY:
-        return RateLimiter(times=5, seconds=60)
-    return RateLimiter(times=1000, seconds=86400)  # High limit for bypass requests
+        limiter = RateLimiter(times=100, seconds=86400)
+    else:
+        limiter = RateLimiter(times=1000, seconds=86400)  # High limit for bypass requests
+
+    # Get the current usage
+    key = f"rate_limit:{client_ip}:{limiter.times}:{limiter.seconds}"
+    current_usage = await redis_client.get(key)
+    
+    if current_usage is not None:
+        current_usage = int(current_usage)
+        remaining = limiter.times - current_usage
+        logging.info(f"IP: {client_ip}, Requests in the past day: {current_usage}, Remaining: {remaining}")
+    else:
+        logging.info(f"IP: {client_ip}, No requests made yet today.")
+
+    return limiter
 
 @app.post("/fact-check")
 async def fact_check(request: Request, response: Response, limiter: RateLimiter = Depends(rate_limit_if_no_bypass)):
