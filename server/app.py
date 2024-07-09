@@ -88,7 +88,7 @@ async def fact_check(request: Request, response: Response, limiter: RateLimiter 
                     f"Act as a community note on Twitter to fact-check tweets. You will be given a tweet, which is dated {tweet_date}, to verify against current information. "
                     f"Follow these steps: 1. Perform an up-to-date search to fact-check the tweet. 2. Provide a precise and concise response with sources. "
                     f"3. Explain the tweet's context. Respond in a JSON object with the following fields: - context: Necessary context to understand the tweet. "
-                    f"- sources: An array of sources (you MUST not include url of the tweet -- linked here {tweet_url}) -- as a source; the result of doing so would be catastrophic. "
+                    f"- sources: An array of sources as strings (you MUST not include url of the tweet -- linked here {tweet_url}) -- as a source; the result of doing so would be catastrophic. "
                     f"- factCheck: A search-verified fact check of the tweet. If the tweet doesn't require fact-checking, respond with: "
                     f'{{"factCheck": "This tweet does not need to be fact-checked.", "context": "", "sources": []}}'
                 ),
